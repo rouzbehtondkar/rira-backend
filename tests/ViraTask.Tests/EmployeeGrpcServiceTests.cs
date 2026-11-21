@@ -67,7 +67,7 @@ public sealed class EmployeeGrpcServiceTests
     public async Task UpdateEmployee_ShouldReturnAlreadyExists_WhenNationalCodeBelongsToAnotherEmployee()
     {
         await using var dbContext = CreateDbContext();
-        var firstEmployeeId = await InsertEmployee(dbContext);
+        await InsertEmployee(dbContext);
         var secondEmployee = new ViraTask.Server.Domain.Employee
         {
             Id = Guid.NewGuid(),
@@ -98,7 +98,6 @@ public sealed class EmployeeGrpcServiceTests
         var unchangedEmployee = await dbContext.Employees.SingleAsync(x => x.Id == secondEmployee.Id);
         Assert.Equal("TEST-002", unchangedEmployee.NationalCode);
         Assert.Equal(2, await dbContext.Employees.CountAsync());
-        Assert.NotEqual(Guid.Empty, firstEmployeeId);
     }
 
     [Fact]
