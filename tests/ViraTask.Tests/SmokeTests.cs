@@ -1,3 +1,5 @@
+using Xunit;
+
 namespace ViraTask.Tests;
 
 public class SmokeTests
