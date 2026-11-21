@@ -8,6 +8,7 @@ option csharp_namespace = "ViraTask.Contracts.Employee.V1";
 service EmployeeService {
   rpc CreateEmployee (CreateEmployeeRequest) returns (Employee);
   rpc GetEmployee (GetEmployeeRequest) returns (Employee);
+  rpc ListEmployees (ListEmployeesRequest) returns (ListEmployeesResponse);
   rpc UpdateEmployee (UpdateEmployeeRequest) returns (Employee);
   rpc DeleteEmployee (DeleteEmployeeRequest) returns (DeleteEmployeeResponse);
 }
@@ -29,6 +30,12 @@ message CreateEmployeeRequest {
 
 message GetEmployeeRequest {
   string id = 1;
+}
+
+message ListEmployeesRequest {}
+
+message ListEmployeesResponse {
+  repeated Employee employees = 1;
 }
 
 message UpdateEmployeeRequest {
