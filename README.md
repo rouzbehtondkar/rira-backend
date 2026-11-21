@@ -39,6 +39,8 @@ Employee fields:
 - gRPC CRUD service
 - Console client for all four CRUD operations
 - Basic request validation and gRPC status mapping for invalid input, missing employees, and duplicate national codes
+- Global gRPC exception interceptor that preserves known gRPC errors, maps caller cancellation to `Cancelled`, logs unexpected exceptions, and returns a generic `Internal` status without exposing server details
+- Structured server-side logging through the built-in ASP.NET Core logging abstractions
 - Automated service tests for create, read, update, delete, missing employees, invalid GUIDs, and invalid birth-date formats
 - Service tests use EF Core InMemory with an isolated database per test; SQL Server-specific unique-index behavior is additionally verified through the local SQL Server setup
 
