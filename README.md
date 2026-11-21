@@ -41,12 +41,13 @@ The current implementation keeps the service intentionally small. Request valida
 
 ## Employee contract
 
-The service exposes four unary RPC methods:
+The service exposes five unary RPC methods. `ListEmployees` supports the companion Next.js dashboard and returns an ordered collection:
 
 | RPC | Purpose |
 |---|---|
 | `CreateEmployee` | Create an employee |
 | `GetEmployee` | Retrieve an employee by ID |
+| `ListEmployees` | Retrieve all employees ordered by last name and first name |
 | `UpdateEmployee` | Replace the editable employee fields |
 | `DeleteEmployee` | Delete an employee |
 
@@ -172,7 +173,7 @@ dotnet test
 
 The automated test project uses EF Core InMemory with an isolated database per test. It covers CRUD behavior, validation, duplicate national codes, missing employees, and global interceptor behavior. The InMemory provider does not reproduce SQL Server's unique-index enforcement; that database-specific constraint is defined in the EF Core model and migration and should also be verified against a real SQL Server instance.
 
-The current suite contains **19 automated tests**.
+The current suite contains **20 automated tests**.
 
 ## Repository structure
 
