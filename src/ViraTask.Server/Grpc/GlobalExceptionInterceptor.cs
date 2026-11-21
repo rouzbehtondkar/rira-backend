@@ -27,12 +27,12 @@ public sealed class GlobalExceptionInterceptor(ILogger<GlobalExceptionIntercepto
         catch (RpcException exception)
         {
             // Preserve the status code while recording the failed request.
+            // Do not log status details: they may contain user input or sensitive data.
             logger.LogWarning(
-                "gRPC request {Method} failed with status {StatusCode} in {ElapsedMilliseconds:F2} ms: {Detail}",
+                "gRPC request {Method} failed with status {StatusCode} in {ElapsedMilliseconds:F2} ms.",
                 context.Method,
                 exception.StatusCode,
-                Stopwatch.GetElapsedTime(startedAt).TotalMilliseconds,
-                exception.Status.Detail);
+                Stopwatch.GetElapsedTime(startedAt).TotalMilliseconds);
 
             throw;
         }
