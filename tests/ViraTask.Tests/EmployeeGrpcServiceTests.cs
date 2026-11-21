@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Grpc.Core;
 using Microsoft.EntityFrameworkCore;
 using ViraTask.Contracts.Employee.V1;
@@ -180,10 +181,11 @@ public sealed class EmployeeGrpcServiceTests
         protected override Metadata RequestHeadersCore => new();
         protected override CancellationToken CancellationTokenCore => CancellationToken.None;
         protected override Metadata ResponseTrailersCore => new();
+        [AllowNull]
         protected override Status StatusCore { get; set; }
         protected override WriteOptions WriteOptionsCore { get; set; } = new();
         protected override AuthContext AuthContextCore => null!;
-        protected override ContextPropagationToken CreatePropagationTokenCore(ContextPropagationOptions options) => null!;
+        protected override ContextPropagationToken CreatePropagationTokenCore([AllowNull] ContextPropagationOptions options) => null!;
         protected override Task WriteResponseHeadersAsyncCore(Metadata responseHeaders) => Task.CompletedTask;
     }
 }
