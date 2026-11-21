@@ -71,8 +71,10 @@ public sealed class GlobalExceptionInterceptorTests
 
         Assert.Same(expectedException, actualException);
         Assert.Equal(StatusCode.NotFound, actualException.StatusCode);
-        Assert.Single(logger.Entries);
-        Assert.Equal(LogLevel.Warning, logger.Entries[0].Level);
+        var logEntry = Assert.Single(logger.Entries);
+        Assert.Equal(LogLevel.Warning, logEntry.Level);
+        Assert.Contains("NotFound", logEntry.Message);
+        Assert.DoesNotContain("Employee was not found.", logEntry.Message);
     }
 
     [Fact]
