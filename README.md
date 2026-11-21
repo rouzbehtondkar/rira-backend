@@ -1,4 +1,4 @@
-# Vira Task — Employee Management gRPC Service
+# Rira Task — Employee Management gRPC Service
 
 An employee-management service built with C#, ASP.NET Core gRPC, Protocol Buffers, Entity Framework Core, and Microsoft SQL Server.
 
@@ -41,7 +41,7 @@ The current implementation keeps the service intentionally small. Request valida
 
 ## Employee contract
 
-The service exposes five unary RPC methods. `ListEmployees` supports the companion Next.js dashboard and returns an ordered collection:
+The service exposes five unary RPC methods. `ListEmployees` supports the companion [Rira Next.js dashboard](https://github.com/rouzbehtondkar/rira-frontend) and returns an ordered collection:
 
 | RPC | Purpose |
 |---|---|
