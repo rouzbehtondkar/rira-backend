@@ -3,7 +3,7 @@ using Grpc.Core;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using ViraTask.Contracts.Employee.V1;
-using ViraTask.Server.Domain;
+using EmployeeEntity = ViraTask.Server.Domain.Employee;
 using ViraTask.Server.Infrastructure;
 
 namespace ViraTask.Server.Grpc;
@@ -16,7 +16,7 @@ public sealed class EmployeeGrpcService(AppDbContext dbContext)
         ServerCallContext context)
     {
         ValidateEmployeeFields(request.FirstName, request.LastName, request.NationalCode, request.BirthDate);
-        var employee = new Domain.Employee
+        var employee = new EmployeeEntity
         {
             Id = Guid.NewGuid(),
             FirstName = request.FirstName.Trim(),
@@ -150,7 +150,7 @@ public sealed class EmployeeGrpcService(AppDbContext dbContext)
     private static RpcException InvalidArgument(string message) =>
         new(new Status(StatusCode.InvalidArgument, message));
 
-    private static Employee ToContract(Domain.Employee employee) =>
+    private static Employee ToContract(EmployeeEntity employee) =>
         new()
         {
             Id = employee.Id.ToString(),
