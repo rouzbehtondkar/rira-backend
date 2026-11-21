@@ -35,7 +35,9 @@ Employee fields:
 
 - Employee domain entity and SQL Server EF Core mapping
 - Unique database index on national code
+- Initial EF Core migration for the `Employees` table
 - gRPC CRUD service
+- Console client for all four CRUD operations
 - Basic request validation and gRPC status mapping for invalid input, missing employees, and duplicate national codes
 
 ## Local configuration
@@ -49,7 +51,29 @@ dotnet user-secrets init --project src/ViraTask.Server
 dotnet user-secrets set "ConnectionStrings:DefaultConnection" "<YOUR_SQL_SERVER_CONNECTION_STRING>" --project src/ViraTask.Server
 ```
 
-Database creation and EF Core migrations will be added after the local SQL Server connection is configured.
+Apply database migrations:
+
+```bash
+dotnet ef database update --project src/ViraTask.Server --startup-project src/ViraTask.Server
+```
+
+## Run locally
+
+The server listens on `http://localhost:5000` using HTTP/2 without TLS (h2c) for local development.
+
+Start the server in the first terminal:
+
+```bash
+dotnet run --project src/ViraTask.Server
+```
+
+Start the console client in a second terminal:
+
+```bash
+dotnet run --project src/ViraTask.Client
+```
+
+To use another gRPC endpoint, set the `VIRATASK_GRPC_ADDRESS` environment variable before starting the client.
 
 ## Build and test
 
