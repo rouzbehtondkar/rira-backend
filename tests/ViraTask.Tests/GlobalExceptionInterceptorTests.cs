@@ -10,6 +10,27 @@ namespace ViraTask.Tests;
 public sealed class GlobalExceptionInterceptorTests
 {
     [Fact]
+    public async Task UnaryServerHandler_ShouldLogMethodAndElapsedTime_WhenRequestSucceeds()
+    {
+        var logger = new CapturingLogger<GlobalExceptionInterceptor>();
+        var interceptor = new GlobalExceptionInterceptor(logger);
+        var context = new TestServerCallContext();
+        var expectedResponse = new Employee { Id = Guid.NewGuid().ToString() };
+
+        var response = await interceptor.UnaryServerHandler(
+            new GetEmployeeRequest { Id = Guid.NewGuid().ToString() },
+            context,
+            (_, _) => Task.FromResult(expectedResponse));
+
+        Assert.Same(expectedResponse, response);
+        var logEntry = Assert.Single(logger.Entries);
+        Assert.Equal(LogLevel.Information, logEntry.Level);
+        Assert.Contains("test-method", logEntry.Message);
+        Assert.Contains("completed successfully", logEntry.Message);
+        Assert.Contains("ms", logEntry.Message);
+    }
+
+    [Fact]
     public async Task UnaryServerHandler_ShouldReturnInternalAndLog_WhenUnexpectedExceptionOccurs()
     {
         var logger = new CapturingLogger<GlobalExceptionInterceptor>();
