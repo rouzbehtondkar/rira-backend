@@ -22,7 +22,11 @@ if (string.IsNullOrWhiteSpace(connectionString))
         "The SQL Server connection string 'DefaultConnection' is missing. Configure it with .NET User Secrets.");
 }
 
-builder.Services.AddGrpc();
+builder.Services.AddGrpc(options =>
+{
+    options.Interceptors.Add<GlobalExceptionInterceptor>();
+});
+builder.Services.AddTransient<GlobalExceptionInterceptor>();
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(connectionString));
 
