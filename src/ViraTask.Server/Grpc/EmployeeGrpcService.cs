@@ -47,6 +47,21 @@ public sealed class EmployeeGrpcService(AppDbContext dbContext)
             : ToContract(employee);
     }
 
+    public override async Task<ListEmployeesResponse> ListEmployees(
+        ListEmployeesRequest request,
+        ServerCallContext context)
+    {
+        var employees = await dbContext.Employees
+            .AsNoTracking()
+            .OrderBy(employee => employee.LastName)
+            .ThenBy(employee => employee.FirstName)
+            .ToListAsync(context.CancellationToken);
+
+        var response = new ListEmployeesResponse();
+        response.Employees.AddRange(employees.Select(ToContract));
+        return response;
+    }
+
     public override async Task<Employee> UpdateEmployee(
         UpdateEmployeeRequest request,
         ServerCallContext context)
