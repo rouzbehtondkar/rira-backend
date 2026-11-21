@@ -16,17 +16,20 @@ public sealed class EmployeeGrpcService(AppDbContext dbContext)
         ServerCallContext context)
     {
         ValidateEmployeeFields(request.FirstName, request.LastName, request.NationalCode, request.BirthDate);
+        var nationalCode = request.NationalCode.Trim();
+        await EnsureNationalCodeIsAvailableAsync(nationalCode, context.CancellationToken);
+
         var employee = new EmployeeEntity
         {
             Id = Guid.NewGuid(),
             FirstName = request.FirstName.Trim(),
             LastName = request.LastName.Trim(),
-            NationalCode = request.NationalCode.Trim(),
+            NationalCode = nationalCode,
             BirthDate = ParseBirthDate(request.BirthDate)
         };
 
         dbContext.Employees.Add(employee);
-        await SaveChangesAsync();
+        await SaveChangesAsync(context.CancellationToken);
         return ToContract(employee);
     }
 
@@ -57,12 +60,18 @@ public sealed class EmployeeGrpcService(AppDbContext dbContext)
         if (employee is null)
             throw new RpcException(new Status(StatusCode.NotFound, "Employee was not found."));
 
+        var nationalCode = request.NationalCode.Trim();
+        await EnsureNationalCodeIsAvailableAsync(
+            nationalCode,
+            context.CancellationToken,
+            employee.Id);
+
         employee.FirstName = request.FirstName.Trim();
         employee.LastName = request.LastName.Trim();
-        employee.NationalCode = request.NationalCode.Trim();
+        employee.NationalCode = nationalCode;
         employee.BirthDate = ParseBirthDate(request.BirthDate);
 
-        await SaveChangesAsync();
+        await SaveChangesAsync(context.CancellationToken);
         return ToContract(employee);
     }
 
@@ -83,11 +92,29 @@ public sealed class EmployeeGrpcService(AppDbContext dbContext)
         return new DeleteEmployeeResponse { Deleted = true };
     }
 
-    private async Task SaveChangesAsync()
+    private async Task EnsureNationalCodeIsAvailableAsync(
+        string nationalCode,
+        CancellationToken cancellationToken,
+        Guid? excludedEmployeeId = null)
+    {
+        var nationalCodeExists = await dbContext.Employees.AnyAsync(
+            employee =>
+                employee.NationalCode == nationalCode &&
+                (!excludedEmployeeId.HasValue || employee.Id != excludedEmployeeId.Value),
+            cancellationToken);
+
+        if (nationalCodeExists)
+        {
+            throw new RpcException(
+                new Status(StatusCode.AlreadyExists, "An employee with this national code already exists."));
+        }
+    }
+
+    private async Task SaveChangesAsync(CancellationToken cancellationToken)
     {
         try
         {
-            await dbContext.SaveChangesAsync();
+            await dbContext.SaveChangesAsync(cancellationToken);
         }
         catch (DbUpdateException exception) when (IsUniqueConstraintViolation(exception))
         {
