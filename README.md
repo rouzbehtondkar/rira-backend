@@ -42,7 +42,7 @@ Employee fields:
 - Global gRPC exception interceptor that preserves known gRPC errors, maps caller cancellation to `Cancelled`, logs unexpected exceptions, and returns a generic `Internal` status without exposing server details
 - Structured request logging with gRPC method, outcome, and elapsed execution time for successful and failed calls
 - Structured server-side logging through the built-in ASP.NET Core logging abstractions
-- Automated service tests for CRUD behavior, validation, duplicate national codes on create/update, missing employees, and global exception interception (unexpected exceptions, preserved gRPC statuses, cancellation, server-side logging, and successful-request duration logging)
+- Automated service tests for CRUD behavior, empty and overlong first/last names, invalid dates and IDs, duplicate national codes on create/update, missing employees on get/update/delete, and global exception interception (unexpected exceptions, preserved gRPC statuses, cancellation, server-side logging, and successful-request duration logging)
 - Service tests use EF Core InMemory with an isolated database per test; SQL Server-specific unique-index behavior is additionally verified through the local SQL Server setup
 
 ## Local configuration
