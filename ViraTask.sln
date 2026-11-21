@@ -1,0 +1,30 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ViraTask.Server", "src\ViraTask.Server\ViraTask.Server.csproj", "{A13D65A1-21A0-4B7C-94B0-4E54F16B1B11}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ViraTask.Client", "src\ViraTask.Client\ViraTask.Client.csproj", "{B24E76B2-32B1-4C8D-A5C1-5F65A27C2C22}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ViraTask.Tests", "tests\ViraTask.Tests\ViraTask.Tests.csproj", "{C35F87C3-43C2-4D9E-B6D2-6A76B38D3D33}"
+EndProject
+Global
+    GlobalSection(SolutionConfigurationPlatforms) = preSolution
+        Debug|Any CPU = Debug|Any CPU
+        Release|Any CPU = Release|Any CPU
+    EndGlobalSection
+    GlobalSection(ProjectConfigurationPlatforms) = postSolution
+        {A13D65A1-21A0-4B7C-94B0-4E54F16B1B11}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+        {A13D65A1-21A0-4B7C-94B0-4E54F16B1B11}.Debug|Any CPU.Build.0 = Debug|Any CPU
+        {A13D65A1-21A0-4B7C-94B0-4E54F16B1B11}.Release|Any CPU.ActiveCfg = Release|Any CPU
+        {A13D65A1-21A0-4B7C-94B0-4E54F16B1B11}.Release|Any CPU.Build.0 = Release|Any CPU
+        {B24E76B2-32B1-4C8D-A5C1-5F65A27C2C22}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+        {B24E76B2-32B1-4C8D-A5C1-5F65A27C2C22}.Debug|Any CPU.Build.0 = Debug|Any CPU
+        {B24E76B2-32B1-4C8D-A5C1-5F65A27C2C22}.Release|Any CPU.ActiveCfg = Release|Any CPU
+        {B24E76B2-32B1-4C8D-A5C1-5F65A27C2C22}.Release|Any CPU.Build.0 = Release|Any CPU
+        {C35F87C3-43C2-4D9E-B6D2-6A76B38D3D33}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+        {C35F87C3-43C2-4D9E-B6D2-6A76B38D3D33}.Debug|Any CPU.Build.0 = Debug|Any CPU
+        {C35F87C3-43C2-4D9E-B6D2-6A76B38D3D33}.Release|Any CPU.ActiveCfg = Release|Any CPU
+        {C35F87C3-43C2-4D9E-B6D2-6A76B38D3D33}.Release|Any CPU.Build.0 = Release|Any CPU
+    EndGlobalSection
+EndGlobal
