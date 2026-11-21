@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using Grpc.Core;
 using Grpc.Core.Interceptors;
 
@@ -11,17 +12,26 @@ public sealed class GlobalExceptionInterceptor(ILogger<GlobalExceptionIntercepto
         ServerCallContext context,
         UnaryServerMethod<TRequest, TResponse> continuation)
     {
+        var startedAt = Stopwatch.GetTimestamp();
+
         try
         {
-            return await continuation(request, context);
+            var response = await continuation(request, context);
+            logger.LogInformation(
+                "gRPC request {Method} completed successfully in {ElapsedMilliseconds:F2} ms.",
+                context.Method,
+                Stopwatch.GetElapsedTime(startedAt).TotalMilliseconds);
+
+            return response;
         }
         catch (RpcException exception)
         {
-            // Expected gRPC errors already have an appropriate status code.
+            // Preserve the status code while recording the failed request.
             logger.LogWarning(
-                "gRPC request {Method} failed with status {StatusCode}: {Detail}",
+                "gRPC request {Method} failed with status {StatusCode} in {ElapsedMilliseconds:F2} ms: {Detail}",
                 context.Method,
                 exception.StatusCode,
+                Stopwatch.GetElapsedTime(startedAt).TotalMilliseconds,
                 exception.Status.Detail);
 
             throw;
@@ -29,8 +39,9 @@ public sealed class GlobalExceptionInterceptor(ILogger<GlobalExceptionIntercepto
         catch (OperationCanceledException) when (context.CancellationToken.IsCancellationRequested)
         {
             logger.LogDebug(
-                "gRPC request {Method} was cancelled by the caller.",
-                context.Method);
+                "gRPC request {Method} was cancelled after {ElapsedMilliseconds:F2} ms.",
+                context.Method,
+                Stopwatch.GetElapsedTime(startedAt).TotalMilliseconds);
 
             throw new RpcException(
                 new Status(StatusCode.Cancelled, "The request was cancelled."));
@@ -40,8 +51,9 @@ public sealed class GlobalExceptionInterceptor(ILogger<GlobalExceptionIntercepto
             // Keep implementation details in server logs, not in the client response.
             logger.LogError(
                 exception,
-                "An unexpected error occurred while processing gRPC request {Method}.",
-                context.Method);
+                "An unexpected error occurred while processing gRPC request {Method} after {ElapsedMilliseconds:F2} ms.",
+                context.Method,
+                Stopwatch.GetElapsedTime(startedAt).TotalMilliseconds);
 
             throw new RpcException(
                 new Status(StatusCode.Internal, "An unexpected server error occurred."));
