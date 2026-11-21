@@ -5,7 +5,7 @@ namespace ViraTask.Tests;
 public class SmokeTests
 {
     [Fact]
-    public void Project_Should_Run_A_Basic_Test()
+    public void TestAssembly_ShouldLoad()
     {
         Assert.True(true);
     }
