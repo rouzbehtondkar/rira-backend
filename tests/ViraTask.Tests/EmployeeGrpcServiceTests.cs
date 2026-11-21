@@ -183,6 +183,7 @@ public sealed class EmployeeGrpcServiceTests
         protected override Metadata ResponseTrailersCore => new();
         [AllowNull]
         protected override Status StatusCore { get; set; }
+        [AllowNull]
         protected override WriteOptions WriteOptionsCore { get; set; } = new();
         protected override AuthContext AuthContextCore => null!;
         protected override ContextPropagationToken CreatePropagationTokenCore([AllowNull] ContextPropagationOptions options) => null!;
