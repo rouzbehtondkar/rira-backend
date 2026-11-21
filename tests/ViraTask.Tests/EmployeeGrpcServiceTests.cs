@@ -101,6 +101,29 @@ public sealed class EmployeeGrpcServiceTests
     }
 
     [Fact]
+    public async Task ListEmployees_ShouldReturnEmployeesOrderedByLastName()
+    {
+        await using var dbContext = CreateDbContext();
+        await InsertEmployee(dbContext);
+        dbContext.Employees.Add(new ViraTask.Server.Domain.Employee
+        {
+            Id = Guid.NewGuid(),
+            FirstName = "Sara",
+            LastName = "Zamani",
+            NationalCode = "TEST-010",
+            BirthDate = new DateOnly(1997, 7, 10)
+        });
+        await dbContext.SaveChangesAsync();
+        var service = new EmployeeGrpcService(dbContext);
+
+        var result = await service.ListEmployees(new ListEmployeesRequest(), CallContext);
+
+        Assert.Equal(2, result.Employees.Count);
+        Assert.Equal("Ahmadi", result.Employees[0].LastName);
+        Assert.Equal("Zamani", result.Employees[1].LastName);
+    }
+
+    [Fact]
     public async Task GetEmployee_ShouldReturnNotFound_WhenEmployeeDoesNotExist()
     {
         await using var dbContext = CreateDbContext();
