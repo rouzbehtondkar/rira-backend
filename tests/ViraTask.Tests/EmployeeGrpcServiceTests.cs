@@ -209,6 +209,105 @@ public sealed class EmployeeGrpcServiceTests
         Assert.Equal(StatusCode.InvalidArgument, exception.StatusCode);
     }
 
+    [Fact]
+    public async Task CreateEmployee_ShouldReturnInvalidArgument_WhenFirstNameIsEmpty()
+    {
+        await using var dbContext = CreateDbContext();
+        var service = new EmployeeGrpcService(dbContext);
+
+        var exception = await Assert.ThrowsAsync<RpcException>(() =>
+            service.CreateEmployee(
+                new CreateEmployeeRequest
+                {
+                    FirstName = " ",
+                    LastName = "Ahmadi",
+                    NationalCode = "TEST-003",
+                    BirthDate = "1995-05-20"
+                },
+                CallContext));
+
+        Assert.Equal(StatusCode.InvalidArgument, exception.StatusCode);
+        Assert.Empty(await dbContext.Employees.ToListAsync());
+    }
+
+    [Fact]
+    public async Task CreateEmployee_ShouldReturnInvalidArgument_WhenFirstNameExceeds100Characters()
+    {
+        await using var dbContext = CreateDbContext();
+        var service = new EmployeeGrpcService(dbContext);
+
+        var exception = await Assert.ThrowsAsync<RpcException>(() =>
+            service.CreateEmployee(
+                new CreateEmployeeRequest
+                {
+                    FirstName = new string('A', 101),
+                    LastName = "Ahmadi",
+                    NationalCode = "TEST-004",
+                    BirthDate = "1995-05-20"
+                },
+                CallContext));
+
+        Assert.Equal(StatusCode.InvalidArgument, exception.StatusCode);
+        Assert.Empty(await dbContext.Employees.ToListAsync());
+    }
+
+    [Fact]
+    public async Task CreateEmployee_ShouldReturnInvalidArgument_WhenLastNameIsEmpty()
+    {
+        await using var dbContext = CreateDbContext();
+        var service = new EmployeeGrpcService(dbContext);
+
+        var exception = await Assert.ThrowsAsync<RpcException>(() =>
+            service.CreateEmployee(
+                new CreateEmployeeRequest
+                {
+                    FirstName = "Ali",
+                    LastName = "",
+                    NationalCode = "TEST-005",
+                    BirthDate = "1995-05-20"
+                },
+                CallContext));
+
+        Assert.Equal(StatusCode.InvalidArgument, exception.StatusCode);
+        Assert.Empty(await dbContext.Employees.ToListAsync());
+    }
+
+    [Fact]
+    public async Task CreateEmployee_ShouldReturnInvalidArgument_WhenLastNameExceeds100Characters()
+    {
+        await using var dbContext = CreateDbContext();
+        var service = new EmployeeGrpcService(dbContext);
+
+        var exception = await Assert.ThrowsAsync<RpcException>(() =>
+            service.CreateEmployee(
+                new CreateEmployeeRequest
+                {
+                    FirstName = "Ali",
+                    LastName = new string('A', 101),
+                    NationalCode = "TEST-006",
+                    BirthDate = "1995-05-20"
+                },
+                CallContext));
+
+        Assert.Equal(StatusCode.InvalidArgument, exception.StatusCode);
+        Assert.Empty(await dbContext.Employees.ToListAsync());
+    }
+
+    [Fact]
+    public async Task DeleteEmployee_ShouldReturnNotFound_WhenEmployeeDoesNotExist()
+    {
+        await using var dbContext = CreateDbContext();
+        var service = new EmployeeGrpcService(dbContext);
+
+        var exception = await Assert.ThrowsAsync<RpcException>(() =>
+            service.DeleteEmployee(
+                new DeleteEmployeeRequest { Id = Guid.NewGuid().ToString() },
+                CallContext));
+
+        Assert.Equal(StatusCode.NotFound, exception.StatusCode);
+        Assert.Empty(await dbContext.Employees.ToListAsync());
+    }
+
     private static AppDbContext CreateDbContext()
     {
         var options = new DbContextOptionsBuilder<AppDbContext>()
